@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s -o /tmp/preview.html -w \"HTTP %{http_code}\\\\n\" http://localhost:5174/preview)",
+      "Read(//tmp/**)",
+      "Bash(curl -s \"http://localhost:5174/src/main.tsx\" -o /tmp/main-compiled.js -w \"main.tsx: HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:5174/src/pages/preview/index.tsx\" -o /tmp/preview-compiled.js -w \"preview: HTTP %{http_code}\\\\n\")",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s \"http://localhost:5174/\")",
+      "Bash(curl -s \"http://localhost:5174/preview\" -o /dev/null)",
+      "Bash(curl -s \"http://localhost:5174/\" -H \"Accept: text/html\" -o /tmp/page.html)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:5174/__TRACKED_VAR__)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(/usr/bin/curl --version)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '%{http_code}' http://localhost:5174/__TRACKED_VAR__)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/onboarding -> %{http_code}\\\\n' http://localhost:5174/onboarding)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/dashboard -> %{http_code}\\\\n' http://localhost:5174/dashboard)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/profile -> %{http_code}\\\\n' http://localhost:5174/profile)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/courses                -> %{http_code}\\\\n' http://localhost:5174/courses)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/courses/small-talk     -> %{http_code}\\\\n' http://localhost:5174/courses/small-talk)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/courses/does-not-exist -> %{http_code}\\\\n' http://localhost:5174/courses/does-not-exist)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '%{http_code}' http://localhost:5173/__TRACKED_VAR__)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/ai-tutor -> %{http_code}\\\\n' http://localhost:5173/ai-tutor)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/courses/small-talk/lessons/lesson-1 -> %{http_code}\\\\n' http://localhost:5174/courses/small-talk/lessons/lesson-1)",
+      "Bash(/usr/bin/curl -s -o /dev/null -w '/courses/past-perfect/lessons/lesson-1 -> %{http_code}\\\\n' http://localhost:5174/courses/past-perfect/lessons/lesson-1)",
+      "Read(//Users/azamat/Desktop/projects/skilleng/backend/src/**)",
+      "Read(//Users/azamat/Desktop/projects/skilleng/backend/prisma/**)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npm i *)",
+      "Bash(echo \"TSC=$?\")",
+      "Bash(npx vite *)",
+      "Bash(echo \"BUILD=$?\")"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+# Render Blueprint — SkillEng API + PostgreSQL
+# Деплой: Render Dashboard → New → Blueprint → выбери этот репозиторий.
+# Frontend деплоится отдельно на Vercel (см. frontend/vercel.json и DEPLOY.md).
+
+databases:
+  - name: skilleng-db
+    plan: free
+    databaseName: skilleng
+    user: skilleng
+
+services:
+  - type: web
+    name: skilleng-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    region: frankfurt
+    # --include=dev нужен: @nestjs/cli, typescript, ts-node лежат в devDependencies,
+    # а при NODE_ENV=production npm их по умолчанию пропускает.
+    buildCommand: npm ci --include=dev && npx prisma generate && npm run build
+    # migrate deploy идемпотентен — безопасно гонять при каждом старте.
+    startCommand: npx prisma migrate deploy && node dist/main
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # PORT Render проставляет сам — не задаём вручную.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skilleng-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      # Кросс-домен (Vercel ↔ Render): refresh-кука должна быть SameSite=None; Secure.
+      - key: REFRESH_COOKIE_SAMESITE
+        value: none
+      # Локальное файловое хранилище (без R2). На free-плане диск эфемерный —
+      # загруженные аудиозаписи сбрасываются при редеплое (для демо это ок).
+      - key: STORAGE_DRIVER
+        value: local
+      # Заполнить вручную после первого деплоя (значения ниже — заглушки):
+      - key: CORS_ORIGIN
+        sync: false # → https://<твой-проект>.vercel.app
+      - key: BACKEND_PUBLIC_URL
+        sync: false # → https://skilleng-api.onrender.com (URL этого сервиса)
+      - key: GEMINI_API_KEY
+        sync: false # → твой ключ Google Gemini (обязателен, иначе бэкенд не стартует)

@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+**/node_modules/
+
+# build output
+dist/
+build/
+**/dist/
+
+# env
+.env
+.env.*
+!.env.example
+
+# local file storage (uploaded audio etc.)
+backend/storage/
+
+# logs
+*.log
+npm-debug.log*
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp

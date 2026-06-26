@@ -1,0 +1,41 @@
+.se-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.30);
+}
+.se-btn[data-variant='destructive']:focus-visible {
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.20);
+}
+
+.se-btn[data-variant='primary']:hover:not(:disabled) {
+  background: var(--se-colors-accent-solidHover);
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.20);
+}
+.se-btn[data-variant='primary']:active:not(:disabled) {
+  background: var(--se-colors-accent-solidActive);
+}
+
+.se-btn[data-variant='secondary']:hover:not(:disabled) {
+  background: var(--se-colors-bg-subtle);
+  border-color: var(--se-colors-border-strong);
+}
+.se-btn[data-variant='secondary']:active:not(:disabled) {
+  background: var(--se-colors-bg-muted);
+}
+
+.se-btn[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--se-colors-bg-subtle);
+}
+.se-btn[data-variant='ghost']:active:not(:disabled) {
+  background: var(--se-colors-bg-muted);
+}
+
+.se-btn[data-variant='destructive']:hover:not(:disabled) {
+  opacity: 0.92;
+  box-shadow: 0 8px 16px rgba(244, 63, 94, 0.25);
+}
+.se-btn[data-variant='destructive']:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+.se-btn[data-variant='link']:hover:not(:disabled) {
+  text-decoration: underline;
+}
