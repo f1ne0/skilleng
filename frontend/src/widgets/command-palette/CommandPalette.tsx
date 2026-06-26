@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text, chakra } from '@chakra-ui/react'
+
+const ChakraInput = chakra('input')
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, CornerDownLeft, ArrowUp, ArrowDown,
@@ -148,8 +150,7 @@ export function CommandPalette() {
                 {/* строка ввода */}
                 <Flex align="center" gap="10px" px="16px" h="54px" borderBottom="1px solid" borderColor="border.subtle">
                   <Box color="text.tertiary"><Search size={18} /></Box>
-                  <Box
-                    as="input"
+                  <ChakraInput
                     ref={inputRef}
                     value={query}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setQuery(e.target.value); setActive(0) }}

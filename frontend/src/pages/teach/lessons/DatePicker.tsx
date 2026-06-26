@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text, chakra } from '@chakra-ui/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+const ChakraButton = chakra('button')
 
 interface Props {
   /** Выбранная дата YYYY-MM-DD или null */
@@ -83,9 +85,8 @@ export function DatePicker({ value, onChange, min }: Props) {
               const isToday = ds === todayStr
               const disabled = ds < minStr
               return (
-                <Box
+                <ChakraButton
                   key={i}
-                  as="button"
                   type="button"
                   flex="1"
                   h="34px"
@@ -104,7 +105,7 @@ export function DatePicker({ value, onChange, min }: Props) {
                   disabled={disabled}
                 >
                   {date.getDate()}
-                </Box>
+                </ChakraButton>
               )
             })}
           </Flex>
@@ -116,8 +117,7 @@ export function DatePicker({ value, onChange, min }: Props) {
 
 function NavBtn({ children, onClick, label }: { children: React.ReactNode; onClick: () => void; label: string }) {
   return (
-    <Box
-      as="button"
+    <ChakraButton
       type="button"
       onClick={onClick}
       aria-label={label}
@@ -132,6 +132,6 @@ function NavBtn({ children, onClick, label }: { children: React.ReactNode; onCli
       _hover={{ bg: 'bg.muted', color: 'text.primary' }}
     >
       {children}
-    </Box>
+    </ChakraButton>
   )
 }
