@@ -1,12 +1,8 @@
-# Render Blueprint — SkillEng API + PostgreSQL
+# Render Blueprint — SkillEng API
+# База данных — внешняя (Neon, бесплатно и бессрочно): строку подключения
+# вставляешь вручную в DATABASE_URL (см. DEPLOY.md, шаг 1).
 # Деплой: Render Dashboard → New → Blueprint → выбери этот репозиторий.
 # Frontend деплоится отдельно на Vercel (см. frontend/vercel.json и DEPLOY.md).
-
-databases:
-  - name: skilleng-db
-    plan: free
-    databaseName: skilleng
-    user: skilleng
 
 services:
   - type: web
@@ -25,10 +21,9 @@ services:
       - key: NODE_ENV
         value: production
       # PORT Render проставляет сам — не задаём вручную.
+      # DATABASE_URL — строка подключения Neon (вставить вручную, см. DEPLOY.md).
       - key: DATABASE_URL
-        fromDatabase:
-          name: skilleng-db
-          property: connectionString
+        sync: false
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_ACCESS_EXPIRES_IN

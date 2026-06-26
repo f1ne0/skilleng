@@ -1,9 +1,9 @@
 # Деплой SkillEng
 
-Архитектура: **бэкенд + PostgreSQL на Render**, **фронтенд на Vercel**. Всё на бесплатных тарифах.
+Архитектура: **бэкенд на Render**, **база PostgreSQL на Neon**, **фронтенд на Vercel**. Всё на бесплатных тарифах. Neon выбран для базы, потому что его бесплатный план не истекает (Render-база удаляется через 30 дней).
 
 ```
-[Браузер] → Vercel (React/Vite, статика) → Render (NestJS API) → Render PostgreSQL
+[Браузер] → Vercel (React/Vite, статика) → Render (NestJS API) → Neon (PostgreSQL)
 ```
 
 ---
@@ -30,26 +30,36 @@ Render и Vercel деплоят из Git. Нужен **один** репозит
 
 ---
 
-## 1. Бэкенд + база на Render
+## 1. База данных на Neon
 
-1. Зайди на [render.com](https://render.com), войди через GitHub.
-2. **New → Blueprint** → выбери репозиторий `skilleng`. Render прочитает `render.yaml` и создаст:
-   - PostgreSQL `skilleng-db`;
-   - веб-сервис `skilleng-api`.
-3. Перед созданием Render попросит заполнить переменные с пометкой «sync: false». Пока можно задать временные значения — позже поправим:
-   - `GEMINI_API_KEY` — **твой ключ Google Gemini** (получить: [aistudio.google.com/apikey](https://aistudio.google.com/apikey)). Без него бэкенд не запустится.
-   - `CORS_ORIGIN` — пока поставь `https://example.com` (заменим после Vercel).
-   - `BACKEND_PUBLIC_URL` — пока пусто/заглушка (заполним, когда узнаем URL сервиса).
-4. Нажми **Apply**. Render соберёт и поднимет сервис. Запиши его адрес — он вида `https://skilleng-api.onrender.com`.
-5. Вернись в **skilleng-api → Environment** и поправь:
-   - `BACKEND_PUBLIC_URL` = `https://skilleng-api.onrender.com` (адрес из шага 4).
-   - `CORS_ORIGIN` оставь пока — обновим после деплоя фронта.
-
-> Миграции (`prisma migrate deploy`) применяются автоматически при старте. `JWT_ACCESS_SECRET` Render генерирует сам.
+1. Зайди на [neon.com](https://neon.com), зарегистрируйся (через GitHub, без карты).
+2. **Create project** → имя `skilleng`, регион выбери поближе (например Europe/Frankfurt). Postgres-версию оставь по умолчанию.
+3. После создания откроется **Connection string**. Важно:
+   - выбери вариант подключения **без пула** (переключатель «Pooled connection» → **выключить**) — так миграции Prisma проходят без проблем;
+   - скопируй строку целиком, вида `postgresql://user:pass@ep-xxx.eu-central-1.aws.neon.tech/skilleng?sslmode=require`.
+4. Эту строку вставишь в `DATABASE_URL` на следующем шаге.
 
 ---
 
-## 2. Фронтенд на Vercel
+## 2. Бэкенд на Render
+
+1. Зайди на [render.com](https://render.com), войди через GitHub.
+2. **New → Blueprint** → выбери репозиторий `skilleng`. Render прочитает `render.yaml` и создаст веб-сервис `skilleng-api`.
+3. Render попросит заполнить переменные с пометкой «sync: false»:
+   - `DATABASE_URL` — строка подключения **из Neon** (шаг 1).
+   - `GEMINI_API_KEY` — **твой ключ Google Gemini** ([aistudio.google.com/apikey](https://aistudio.google.com/apikey)). Без него бэкенд не запустится.
+   - `CORS_ORIGIN` — пока поставь `https://example.com` (заменим после Vercel).
+   - `BACKEND_PUBLIC_URL` — пока заглушка `https://skilleng-api.onrender.com` (поправим, когда узнаем точный URL).
+4. Нажми **Deploy Blueprint**. Render соберёт и поднимет сервис. Запиши его адрес — он вида `https://skilleng-api.onrender.com` (может быть с суффиксом, например `skilleng-api-q2cm`).
+5. Вернись в **skilleng-api → Environment** и поправь `BACKEND_PUBLIC_URL` на фактический адрес сервиса из шага 4. `CORS_ORIGIN` обновим после деплоя фронта.
+
+> Миграции (`prisma migrate deploy`) применяются автоматически при старте — таблицы создаются в базе Neon сами. `JWT_ACCESS_SECRET` Render генерирует сам.
+>
+> Если ты уже создавал базу `skilleng-db` на Render — её можно удалить (Render Dashboard → база → Settings → Delete), она больше не нужна.
+
+---
+
+## 3. Фронтенд на Vercel
 
 1. Зайди на [vercel.com](https://vercel.com), войди через GitHub.
 2. **Add New → Project** → выбери тот же репозиторий.
@@ -62,7 +72,7 @@ Render и Vercel деплоят из Git. Нужен **один** репозит
 
 ---
 
-## 3. Связать фронт и бэк (CORS)
+## 4. Связать фронт и бэк (CORS)
 
 1. Скопируй адрес фронта из Vercel (`https://<твой-проект>.vercel.app`).
 2. На Render: **skilleng-api → Environment** → `CORS_ORIGIN` = этот адрес (без слэша в конце). Сохрани — сервис перезапустится.
@@ -71,7 +81,7 @@ Render и Vercel деплоят из Git. Нужен **один** репозит
 
 ---
 
-## 4. Демо-данные (один раз)
+## 5. Демо-данные (один раз)
 
 Чтобы появились курсы, юниты, темы и демо-пользователи:
 
