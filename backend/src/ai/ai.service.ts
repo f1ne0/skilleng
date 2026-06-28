@@ -39,6 +39,31 @@ const AUDIO_EXT_TO_MIME: Record<string, string> = {
   wav: "audio/wav",
 };
 
+/**
+ * Определяем аудиоформат по «магическим байтам» содержимого, а не по URL.
+ * Локальное хранилище отдаёт URL без расширения (/uploads/local/<base64>),
+ * поэтому полагаться на расширение нельзя — иначе WAV уходит как audio/webm
+ * и Gemini не может его декодировать (отсюда «галлюцинации» на музыке/шуме).
+ */
+function sniffAudioMime(buf: Buffer): string | null {
+  if (buf.length < 12) return null;
+  const ascii = (start: number, len: number) =>
+    buf.toString("latin1", start, start + len);
+  // WAV: "RIFF"...."WAVE"
+  if (ascii(0, 4) === "RIFF" && ascii(8, 4) === "WAVE") return "audio/wav";
+  // WebM / Matroska: EBML header 1A 45 DF A3
+  if (buf[0] === 0x1a && buf[1] === 0x45 && buf[2] === 0xdf && buf[3] === 0xa3)
+    return "audio/webm";
+  // OGG: "OggS"
+  if (ascii(0, 4) === "OggS") return "audio/ogg";
+  // MP4 / M4A: ....ftyp
+  if (ascii(4, 4) === "ftyp") return "audio/mp4";
+  // MP3: "ID3" tag or MPEG frame sync 0xFFEx/0xFFFx
+  if (ascii(0, 3) === "ID3") return "audio/mpeg";
+  if (buf[0] === 0xff && (buf[1] & 0xe0) === 0xe0) return "audio/mpeg";
+  return null;
+}
+
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
@@ -237,8 +262,11 @@ Do NOT rewrite the text for the student. Hints must be encouraging and specific.
     }
     const audio = Buffer.from(await response.arrayBuffer());
 
-    const ext = params.audioUrl.split(".").pop()?.toLowerCase() ?? "";
-    const mimeType = AUDIO_EXT_TO_MIME[ext] ?? "audio/webm";
+    // Формат определяем по содержимому (URL локального хранилища без расширения).
+    const ext =
+      params.audioUrl.split(/[?#]/)[0].split(".").pop()?.toLowerCase() ?? "";
+    const mimeType =
+      sniffAudioMime(audio) ?? AUDIO_EXT_TO_MIME[ext] ?? "audio/webm";
 
     const result = await this.gemini.generateFromAudio(
       audio,

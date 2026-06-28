@@ -13,7 +13,13 @@ export function EmptyState({ onPickPrompt }: { onPickPrompt: (prompt: string) =>
     : 'I can explain grammar, drill you on tricky points, fix your writing, or just have a conversation.'
 
   return (
-    <Flex h="100%" align="center" justify="center" px="20px" py="40px">
+    <Flex
+      minH="100%"
+      align={{ base: 'flex-start', md: 'center' }}
+      justify="center"
+      px="20px"
+      py={{ base: '24px', md: '40px' }}
+    >
       <Stack gap="32px" maxW="640px" w="100%">
         <motion.div
           initial={{ opacity: 0, y: 8 }}

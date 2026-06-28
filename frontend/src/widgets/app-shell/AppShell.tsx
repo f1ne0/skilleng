@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
-import { Sidebar } from './sidebar'
+import { Sidebar, MobileSidebar } from './sidebar'
 import { Topbar } from './topbar'
 import { useShellStore } from './useShellStore'
 import { gamificationApi } from '@shared/api'
@@ -36,6 +36,7 @@ export function AppShell() {
   return (
     <Flex minH="100vh" bg="bg.canvas">
       <Sidebar />
+      <MobileSidebar />
       <Flex direction="column" flex="1" minW="0">
         <Topbar streakDays={data?.streak.current ?? 0} xp={data?.totalXp ?? 0} />
         <Box as="main" flex="1" minH="0">

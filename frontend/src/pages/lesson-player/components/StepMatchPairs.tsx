@@ -25,6 +25,19 @@ export function StepMatchPairs({
     rightsUsedBy[rightIdx] = Number(leftIdx)
   }
 
+  // Последовательные номера пар (1,2,3…) — компактная подсветка соответствия
+  // вместо дублирования длинного текста (он распирал колонки на телефоне).
+  const pairNumber: Record<number, number> = {}
+  {
+    let n = 0
+    step.lefts.forEach((_, i) => {
+      if (mapping[i] !== undefined) {
+        n += 1
+        pairNumber[i] = n
+      }
+    })
+  }
+
   const handleRightClick = (rightIdx: number) => {
     if (locked) return
     if (selectedLeft === null) return
@@ -77,8 +90,8 @@ export function StepMatchPairs({
         </Heading>
       </Stack>
 
-      <Flex gap="14px" align="flex-start">
-        <Stack gap="8px" flex="1">
+      <Flex gap={{ base: '8px', md: '14px' }} align="flex-start">
+        <Stack gap="8px" flex="1" minW="0">
           {step.lefts.map((text, i) => {
             const paired = mapping[i] !== undefined
             const isSelected = selectedLeft === i
@@ -87,17 +100,16 @@ export function StepMatchPairs({
                 key={`L-${i}`}
                 text={text}
                 paired={paired}
-                pairedLabel={paired ? step.rights[mapping[i]!] : undefined}
+                pairNum={pairNumber[i]}
                 selected={isSelected}
                 onClick={() => handleLeftClick(i)}
                 disabled={locked}
-                side="left"
                 status={status}
               />
             )
           })}
         </Stack>
-        <Stack gap="8px" flex="1">
+        <Stack gap="8px" flex="1" minW="0">
           {step.rights.map((text, i) => {
             const usedByLeft = rightsUsedBy[i]
             const paired = usedByLeft !== undefined
@@ -106,11 +118,10 @@ export function StepMatchPairs({
                 key={`R-${i}`}
                 text={text}
                 paired={paired}
-                pairedLabel={paired ? step.lefts[usedByLeft] : undefined}
+                pairNum={paired ? pairNumber[usedByLeft] : undefined}
                 selected={false}
                 onClick={() => handleRightClick(i)}
                 disabled={locked || selectedLeft === null}
-                side="right"
                 status={status}
               />
             )
@@ -122,15 +133,14 @@ export function StepMatchPairs({
 }
 
 function PairButton({
-  text, paired, pairedLabel, selected, onClick, disabled, side, status,
+  text, paired, pairNum, selected, onClick, disabled, status,
 }: {
   text: string
   paired: boolean
-  pairedLabel?: string
+  pairNum?: number
   selected: boolean
   onClick: () => void
   disabled?: boolean
-  side: 'left' | 'right'
   status: StepStatus
 }) {
   const locked = status === 'correct' || status === 'wrong'
@@ -164,22 +174,33 @@ function PairButton({
         borderColor={borderColor}
         borderRadius="lg"
         color={color}
-        fontSize="md"
+        fontSize={{ base: 'sm', md: 'md' }}
         fontFamily="body"
         textAlign="left"
         cursor={disabled ? 'default' : 'pointer'}
+        css={{ overflowWrap: 'anywhere' }}
       >
-        <Box flex="1">{text}</Box>
-        {paired && pairedLabel && (
-          <Box fontSize="xs" color="text.tertiary" fontFamily="mono">
-            {side === 'left' ? '→' : '←'} {pairedLabel}
+        <Box flex="1" minW="0">{text}</Box>
+        {locked && paired ? (
+          <Box flexShrink={0} color={status === 'correct' ? 'accent.solid' : 'error'}>
+            {status === 'correct' ? <Check size={16} /> : <X size={16} />}
           </Box>
-        )}
-        {locked && paired && (
-          <Box color={status === 'correct' ? 'accent.solid' : 'error'}>
-            {status === 'correct' ? <Check size={14} /> : <X size={14} />}
-          </Box>
-        )}
+        ) : pairNum ? (
+          <Flex
+            flexShrink={0}
+            w="22px"
+            h="22px"
+            borderRadius="full"
+            bg="accent.solid"
+            color="text.onAccent"
+            align="center"
+            justify="center"
+            fontSize="12px"
+            fontWeight="bold"
+          >
+            {pairNum}
+          </Flex>
+        ) : null}
       </NativeButton>
     </motion.div>
   )

@@ -1,60 +1,13 @@
 import type { ReactNode } from 'react'
 import { Box, Flex, Stack } from '@chakra-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  LayoutDashboard,
-  Map,
-  BarChart3,
-  BookOpen,
-  BookMarked,
-  Library,
-  Bot,
-  User as UserIcon,
-  Sparkles,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Trophy,
-  Medal,
-  Users,
-  GraduationCap,
-  ClipboardCheck,
-} from 'lucide-react'
+import { Sparkles, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Badge, NativeButton } from '@shared/ui'
 import { ThemeToggle } from '@features/theme-toggle'
 import { useShellStore } from '../useShellStore'
 import { useAuthStore } from '@entities/user'
 import { NavItem } from './NavItem'
-
-const STUDENT_NAV = [
-  { to: '/dashboard',    label: 'Dashboard',    Icon: LayoutDashboard },
-  { to: '/path',         label: 'My path',      Icon: Map },
-  { to: '/courses',      label: 'Courses',      Icon: BookOpen },
-  { to: '/topics',       label: 'Topics',       Icon: Library },
-  { to: '/vocabulary',   label: 'Vocabulary',   Icon: BookMarked },
-  { to: '/ai-tutor',     label: 'AI Tutor',     Icon: Bot, badge: 'New' as const },
-  { to: '/achievements', label: 'Achievements', Icon: Trophy },
-  { to: '/leaderboard',  label: 'Leaderboard',  Icon: Medal },
-  { to: '/groups',       label: 'Groups',       Icon: Users },
-  { to: '/profile',      label: 'Profile',      Icon: UserIcon },
-] as const
-
-const TEACHER_NAV = [
-  { to: '/teach',                   label: 'Overview',     Icon: GraduationCap, exact: true },
-  { to: '/teach/courses',           label: 'Courses',      Icon: BookOpen },
-  { to: '/teach/topics',            label: 'Topics',       Icon: Library },
-  { to: '/teach/exams',             label: 'Exams',        Icon: ClipboardCheck },
-  { to: '/teach/groups',            label: 'Groups',       Icon: Users },
-  { to: '/teach/students',          label: 'Students',     Icon: GraduationCap },
-  { to: '/teach/analytics',         label: 'Analytics',    Icon: BarChart3 },
-] as const
-
-// Общие пункты для учителя: AI-ассистент (в режиме преподавателя) и профиль.
-// Студенческие разделы (My path, Vocabulary, Achievements…) учителю не показываем —
-// они завязаны на студенческие данные (уровень, словарь, XP) и дают ошибки
-const TEACHER_COMMON_NAV = [
-  { to: '/ai-tutor', label: 'AI Assistant', Icon: Bot },
-  { to: '/profile',  label: 'Profile',      Icon: UserIcon },
-] as const
+import { STUDENT_NAV, TEACHER_NAV, TEACHER_COMMON_NAV } from './navConfig'
 
 export const SIDEBAR_W_EXPANDED = 240
 export const SIDEBAR_W_COLLAPSED = 64
@@ -66,6 +19,7 @@ export function Sidebar() {
   const isTeacher = role === 'TEACHER'
 
   return (
+    <Box display={{ base: 'none', lg: 'block' }} flexShrink={0}>
     <motion.aside
       animate={{ width: collapsed ? SIDEBAR_W_COLLAPSED : SIDEBAR_W_EXPANDED }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
@@ -238,6 +192,7 @@ export function Sidebar() {
         </Stack>
       </Flex>
     </motion.aside>
+    </Box>
   )
 }
 

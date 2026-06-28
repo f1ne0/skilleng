@@ -740,7 +740,7 @@ function ExamRow({ exam, previewing, onGenerate, onPreview, onResults, onEdit, o
             {exam.unitsLabel ?? ''} · {ready ? `${exam.questionCount} questions` : 'no questions yet'} · pass {exam.passingScore}%
           </Text>
         </Stack>
-        <Flex gap="8px" flexShrink={0}>
+        <Flex gap="8px" wrap="wrap" w={{ base: '100%', md: 'auto' }} justify={{ base: 'flex-start', md: 'flex-end' }}>
           <Button size="sm" variant="ghost" disabled={!ready} loading={previewing} onClick={onPreview}>
             <Eye size={14} /> Preview
           </Button>

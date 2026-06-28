@@ -101,6 +101,20 @@ export function AddWordDialog({
             onChange={(e) => setExample(e.target.value)}
             placeholder="She was apprehensive about the exam."
             rows={2}
+            w="100%"
+            bg="bg.elevated"
+            border="1px solid"
+            borderColor="border.default"
+            borderRadius="lg"
+            px="12px"
+            py="8px"
+            fontSize="md"
+            fontFamily="body"
+            color="text.primary"
+            outline="none"
+            resize="vertical"
+            _placeholder={{ color: 'text.tertiary' }}
+            _focusVisible={{ borderColor: 'accent.solid', boxShadow: 'focus' }}
           />
         </Stack>
       </Stack>

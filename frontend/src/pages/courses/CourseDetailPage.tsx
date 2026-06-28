@@ -496,18 +496,16 @@ function LessonRow({
             <span>Opens {formatOpenDate(lesson.availableFrom!)}</span>
           </Flex>
         ) : (
-        <Flex gap="10px" mt="2px" color="text.tertiary" fontSize="xs" align="center">
-          <Flex align="center" gap="4px">
+        <Flex columnGap="10px" rowGap="2px" mt="2px" color="text.tertiary" fontSize="xs" align="center" wrap="wrap">
+          <Flex align="center" gap="4px" flexShrink={0} whiteSpace="nowrap">
             {lesson.skill ? SKILL_ICON[lesson.skill] : LESSON_KIND_ICON[lesson.kind]}
             <span>{lesson.skill ? SKILL_LABEL[lesson.skill] : LESSON_KIND_LABEL[lesson.kind]}</span>
           </Flex>
-          <Text>·</Text>
-          <Flex align="center" gap="4px">
+          <Flex align="center" gap="4px" flexShrink={0} whiteSpace="nowrap">
             <Clock size={11} />
             <span>{lesson.durationMin} min</span>
           </Flex>
-          <Text>·</Text>
-          <Flex align="center" gap="4px" color="accent.text" fontWeight="medium">
+          <Flex align="center" gap="4px" flexShrink={0} whiteSpace="nowrap" color="accent.text" fontWeight="medium">
             <Zap size={11} fill="currentColor" />
             <span>+{lesson.xpReward} XP</span>
           </Flex>

@@ -309,37 +309,82 @@ function QuestionBody({
   const lefts = (q.payload.lefts as string[]) ?? []
   const rights = (q.payload.rights as string[]) ?? []
   const usedRights = new Set(Object.values(answer.mapping))
+
+  // номера пар (1,2,3…) — компактная подсветка без дублирования текста
+  const pairNumber: Record<number, number> = {}
+  const rightToLeft: Record<number, number> = {}
+  {
+    let n = 0
+    lefts.forEach((_, li) => {
+      const ri = answer.mapping[li]
+      if (ri !== undefined) {
+        n += 1
+        pairNumber[li] = n
+        rightToLeft[ri] = li
+      }
+    })
+  }
+
   return (
-    <Flex gap="14px">
-      <Stack gap="6px" flex="1">
+    <Flex gap={{ base: '8px', md: '14px' }} align="flex-start">
+      <Stack gap="6px" flex="1" minW="0">
         {lefts.map((l, li) => {
-          const ri = answer.mapping[li]
-          const matched = ri !== undefined
+          const matched = answer.mapping[li] !== undefined
           const active = matchLeft === li
           return (
             <NativeButton key={li} onClick={() => setMatchLeft(active ? null : li)}
+              display="flex" alignItems="center" gap="8px" w="100%"
               px="12px" py="8px" borderRadius="md" border="1px solid"
               borderColor={active ? 'accent.solid' : matched ? 'accent.subtle' : 'border.default'}
-              bg={matched ? 'accent.subtle' : 'transparent'} textAlign="left" fontSize="sm">
-              {l}{matched ? ` → ${rights[ri]}` : ''}
+              bg={matched ? 'accent.subtle' : 'transparent'} textAlign="left" fontSize="sm"
+              css={{ overflowWrap: 'anywhere' }}>
+              <Box flex="1" minW="0">{l}</Box>
+              {pairNumber[li] && <PairBadge n={pairNumber[li]} />}
             </NativeButton>
           )
         })}
       </Stack>
-      <Stack gap="6px" flex="1">
-        {rights.map((r, ri) => (
-          <NativeButton key={ri} disabled={usedRights.has(ri)}
-            onClick={() => {
-              if (matchLeft === null) return
-              onChange({ kind: 'match', mapping: { ...answer.mapping, [matchLeft]: ri } })
-              setMatchLeft(null)
-            }}
-            px="12px" py="8px" borderRadius="md" border="1px solid" borderColor="border.default"
-            opacity={usedRights.has(ri) ? 0.4 : 1} textAlign="left" fontSize="sm">
-            {r}
-          </NativeButton>
-        ))}
+      <Stack gap="6px" flex="1" minW="0">
+        {rights.map((r, ri) => {
+          const used = usedRights.has(ri)
+          const li = rightToLeft[ri]
+          const badgeNum = li !== undefined ? pairNumber[li] : undefined
+          return (
+            <NativeButton key={ri} disabled={used}
+              onClick={() => {
+                if (matchLeft === null) return
+                onChange({ kind: 'match', mapping: { ...answer.mapping, [matchLeft]: ri } })
+                setMatchLeft(null)
+              }}
+              display="flex" alignItems="center" gap="8px" w="100%"
+              px="12px" py="8px" borderRadius="md" border="1px solid" borderColor="border.default"
+              opacity={used ? 0.4 : 1} textAlign="left" fontSize="sm"
+              css={{ overflowWrap: 'anywhere' }}>
+              <Box flex="1" minW="0">{r}</Box>
+              {badgeNum ? <PairBadge n={badgeNum} /> : null}
+            </NativeButton>
+          )
+        })}
       </Stack>
+    </Flex>
+  )
+}
+
+function PairBadge({ n }: { n: number }) {
+  return (
+    <Flex
+      flexShrink={0}
+      w="20px"
+      h="20px"
+      borderRadius="full"
+      bg="accent.solid"
+      color="text.onAccent"
+      align="center"
+      justify="center"
+      fontSize="11px"
+      fontWeight="bold"
+    >
+      {n}
     </Flex>
   )
 }

@@ -108,41 +108,46 @@ export function TeachStudentsPage() {
                   const fullName = `${r.user.firstName}${r.user.lastName ? ` ${r.user.lastName}` : ''}`
                   const groupId = r.groups[0]?.id
                   return (
-                    <Flex key={r.user.id} align="center" gap="12px" py="12px" px="12px"
+                    <Flex key={r.user.id} align="center" gap="12px" wrap="wrap" py="12px" px="12px"
                       borderTop={idx === 0 ? 'none' : '1px solid'} borderColor="border.subtle">
-                      <Avatar size="sm" name={fullName} src={r.user.avatarUrl} />
-                      <Box flex="1" minW="0">
-                        <Flex align="center" gap="8px" wrap="wrap">
-                          <Text fontSize="sm" fontWeight="medium" lineHeight="tight" truncate>{fullName}</Text>
-                          {r.stats.needsAttention && (
-                            <Badge tone="error" intensity="subtle" shape="pill">needs attention</Badge>
-                          )}
-                        </Flex>
-                        <Text fontSize="xs" color="text.tertiary" truncate>
-                          {r.groups.map((g) => g.name).join(', ')}
-                        </Text>
-                      </Box>
-                      <Flex gap="16px" align="center" flexShrink={0}>
-                        <Stat icon={<Target size={12} />} value={`${r.stats.accuracyPercent}%`} label="accuracy" />
-                        <Box display={{ base: 'none', sm: 'block' }}>
-                          <Stat icon={<BookCheck size={12} />} value={`${r.stats.completedLessons}`} label="lessons" />
+                      <Flex align="center" gap="12px" flex="1" minW="0">
+                        <Avatar size="sm" name={fullName} src={r.user.avatarUrl} />
+                        <Box flex="1" minW="0">
+                          <Flex align="center" gap="8px" wrap="wrap">
+                            <Text fontSize="sm" fontWeight="medium" lineHeight="tight" truncate>{fullName}</Text>
+                            {r.stats.needsAttention && (
+                              <Badge tone="error" intensity="subtle" shape="pill">needs attention</Badge>
+                            )}
+                          </Flex>
+                          <Text fontSize="xs" color="text.tertiary" truncate>
+                            {r.groups.map((g) => g.name).join(', ')}
+                          </Text>
                         </Box>
                       </Flex>
-                      <Flex gap="2px" flexShrink={0}>
-                        {groupId && (
-                          <Button size="sm" variant="ghost"
-                            onClick={() => navigate(`/teach/groups/${groupId}/students/${r.user.id}`)}>
-                            Detail
-                          </Button>
-                        )}
-                        <NativeButton type="button" aria-label="Remove from group" title="Remove from group"
-                          onClick={() => setManage(r)}
-                          display="inline-flex" alignItems="center" justifyContent="center"
-                          w="32px" h="32px" bg="transparent" border="1px solid" borderColor="transparent"
-                          borderRadius="md" color="text.tertiary" cursor="pointer"
-                          _hover={{ bg: 'bg.subtle', color: 'error' }}>
-                          <UserMinus size={14} />
-                        </NativeButton>
+                      <Flex gap="12px" align="center" justify={{ base: 'space-between', sm: 'flex-end' }}
+                        w={{ base: '100%', sm: 'auto' }} flexShrink={0}>
+                        <Flex gap="16px" align="center">
+                          <Stat icon={<Target size={12} />} value={`${r.stats.accuracyPercent}%`} label="accuracy" />
+                          <Box display={{ base: 'none', sm: 'block' }}>
+                            <Stat icon={<BookCheck size={12} />} value={`${r.stats.completedLessons}`} label="lessons" />
+                          </Box>
+                        </Flex>
+                        <Flex gap="2px" flexShrink={0}>
+                          {groupId && (
+                            <Button size="sm" variant="ghost"
+                              onClick={() => navigate(`/teach/groups/${groupId}/students/${r.user.id}`)}>
+                              Detail
+                            </Button>
+                          )}
+                          <NativeButton type="button" aria-label="Remove from group" title="Remove from group"
+                            onClick={() => setManage(r)}
+                            display="inline-flex" alignItems="center" justifyContent="center"
+                            w="32px" h="32px" bg="transparent" border="1px solid" borderColor="transparent"
+                            borderRadius="md" color="text.tertiary" cursor="pointer"
+                            _hover={{ bg: 'bg.subtle', color: 'error' }}>
+                            <UserMinus size={14} />
+                          </NativeButton>
+                        </Flex>
                       </Flex>
                     </Flex>
                   )

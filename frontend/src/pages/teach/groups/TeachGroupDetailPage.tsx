@@ -179,7 +179,7 @@ export function TeachGroupDetailPage() {
                       </Text>
                     )}
                   </Stack>
-                  <Flex gap="6px" flexShrink={0}>
+                  <Flex gap="6px" flexShrink={0} w={{ base: '100%', sm: 'auto' }}>
                     <Button
                       size="sm"
                       variant="secondary"
@@ -401,53 +401,64 @@ export function TeachGroupDetailPage() {
                         key={m.user.id}
                         align="center"
                         gap="12px"
+                        wrap="wrap"
                         py="12px"
                         px="12px"
                         borderTop={idx === 0 ? 'none' : '1px solid'}
                         borderColor="border.subtle"
                       >
-                        <Avatar size="sm" name={fullName} src={m.user.avatarUrl} />
-                        <Box flex="1" minW="0">
-                          <Flex align="center" gap="8px" wrap="wrap">
-                            <Text fontSize="sm" fontWeight="medium" lineHeight="tight" truncate>
-                              {fullName}
+                        <Flex align="center" gap="12px" flex="1" minW="0">
+                          <Avatar size="sm" name={fullName} src={m.user.avatarUrl} />
+                          <Box flex="1" minW="0">
+                            <Flex align="center" gap="8px" wrap="wrap">
+                              <Text fontSize="sm" fontWeight="medium" lineHeight="tight" truncate>
+                                {fullName}
+                              </Text>
+                              {st?.needsAttention && (
+                                <Badge tone="error" intensity="subtle" shape="pill">needs attention</Badge>
+                              )}
+                            </Flex>
+                            <Text fontSize="xs" color="text.tertiary" truncate>
+                              last active {formatLastActive(m.user.lastActiveDate)}
                             </Text>
-                            {st?.needsAttention && (
-                              <Badge tone="error" intensity="subtle" shape="pill">needs attention</Badge>
-                            )}
-                          </Flex>
-                          <Text fontSize="xs" color="text.tertiary">
-                            last active {formatLastActive(m.user.lastActiveDate)}
-                          </Text>
-                        </Box>
-                        <Flex gap="16px" align="center" fontSize="sm" flexShrink={0}>
-                          <Stack gap="0" textAlign="right" minW="52px">
-                            <Text fontFamily="mono" color="accent.text">{st?.accuracyPercent ?? 0}%</Text>
-                            <Text fontSize="xs" color="text.tertiary">accuracy</Text>
-                          </Stack>
-                          <Stack gap="0" textAlign="right" minW="56px" display={{ base: 'none', sm: 'flex' }}>
-                            <Text fontFamily="mono">{st?.completedLessons ?? 0}</Text>
-                            <Text fontSize="xs" color="text.tertiary">lessons</Text>
-                          </Stack>
+                          </Box>
                         </Flex>
-                        <Flex gap="4px" flexShrink={0}>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() =>
-                              navigate(`/teach/groups/${id}/students/${m.user.id}`)
-                            }
-                          >
-                            Detail
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            leftIcon={<UserMinus size={12} />}
-                            onClick={() => setPendingKick(m.user.id)}
-                          >
-                            Remove
-                          </Button>
+                        <Flex
+                          gap="12px"
+                          align="center"
+                          justify={{ base: 'space-between', sm: 'flex-end' }}
+                          w={{ base: '100%', sm: 'auto' }}
+                          flexShrink={0}
+                        >
+                          <Flex gap="16px" align="center" fontSize="sm">
+                            <Stack gap="0" textAlign="right" minW="52px">
+                              <Text fontFamily="mono" color="accent.text">{st?.accuracyPercent ?? 0}%</Text>
+                              <Text fontSize="xs" color="text.tertiary">accuracy</Text>
+                            </Stack>
+                            <Stack gap="0" textAlign="right" minW="56px" display={{ base: 'none', sm: 'flex' }}>
+                              <Text fontFamily="mono">{st?.completedLessons ?? 0}</Text>
+                              <Text fontSize="xs" color="text.tertiary">lessons</Text>
+                            </Stack>
+                          </Flex>
+                          <Flex gap="4px" flexShrink={0}>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                navigate(`/teach/groups/${id}/students/${m.user.id}`)
+                              }
+                            >
+                              Detail
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              leftIcon={<UserMinus size={12} />}
+                              onClick={() => setPendingKick(m.user.id)}
+                            >
+                              Remove
+                            </Button>
+                          </Flex>
                         </Flex>
                       </Flex>
                     )
